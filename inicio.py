@@ -44,26 +44,27 @@ def agregar_al_carrito():
     cantidadproducto = int(input("Cantidad a agregar al carrito: "))
 
     # Verifica si el carrito existe para el usuario (no tengo usuarios jsjsjs, tons funciona para el usuario 1, si quiere puede cambiar el id y se va a crear uno nuevo en su carrito)
-    carrito_existente = verificar_carrito_existente(1)
-    informacion_carrito = carrito_existente.json() if carrito_existente else None
-    
-    print(f"Información del carrito: {informacion_carrito[0]}")
-
+    carrito_existente = verificar_carrito_existente(2)
+    if carrito_existente:
+        informacion_carrito = carrito_existente.json()
+    else:
+        informacion_carrito = None    
+        
     producto_info_url = f"{productos_api_url}/{producto_id}"
     response = requests.get(producto_info_url)
-    
+        
     if response.status_code == 200:
         producto = response.json()
         precio = producto.get("precio")
         subtotalproducto = precio * cantidadproducto
-        subtotal = informacion_carrito[0]["subtotal"] + subtotalproducto if informacion_carrito[0] != None else subtotalproducto
-        cantidad = informacion_carrito[0]["cantidad"] + cantidadproducto if informacion_carrito[0] != None else cantidadproducto
+        subtotal = informacion_carrito[0]["subtotal"] + subtotalproducto if  informacion_carrito != None else subtotalproducto
+        cantidad = informacion_carrito[0]["cantidad"] + cantidadproducto if  informacion_carrito != None else cantidadproducto
         print(f"Producto agregado al carrito:\nNombre: {producto['nombre']}\nCantidad: {cantidadproducto}\nSubtotal: {subtotalproducto}")
         
         if carrito_existente:
-            actualizar_carrito(producto_id, cantidad, subtotal, 1)  # "1" es el ID de usuario
+            actualizar_carrito(producto_id, cantidad, subtotal, 2)  # "1" es el ID de usuario
         else:
-            guardar_carrito(producto_id, cantidad, subtotal, 1)  # "1" es el ID de usuario
+            guardar_carrito(producto_id, cantidad, subtotal, 2)  # "1" es el ID de usuario
     else:
         print("Error al obtener la información del producto.")
 
@@ -145,7 +146,7 @@ def main():
         elif opcion == "3":
             agregar_al_carrito()
         elif opcion == "4":
-            visualizar_carrito(1)
+            visualizar_carrito(2)
         elif opcion == "5":
             break
         else:
